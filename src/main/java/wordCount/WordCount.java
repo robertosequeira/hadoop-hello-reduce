@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -48,7 +49,13 @@ public class WordCount {
   }
 
   public static void main(String[] args) throws Exception {
-    Configuration conf = new Configuration();
+    
+	FileSystem fs = FileSystem.get(new Configuration());
+    if (fs.exists(new Path(args[1]))) {
+   	  fs.delete(new Path(args[1]), true);
+    }
+    
+	Configuration conf = new Configuration();
     Job job = Job.getInstance(conf, "word count");
     job.setJarByClass(WordCount.class);
     job.setMapperClass(TokenizerMapper.class);
